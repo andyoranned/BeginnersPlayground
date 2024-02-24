@@ -1,0 +1,28 @@
+﻿ORG 100
+Get,    LoadI       ptr    / Load the number found at address ptr.
+    Skipcond   400        / If it  is a zero, we are done.
+    Jump       Outp        / Otherwise, proceed with operation.
+    Load Sum			/Loads running total to AC
+	Output				/Prints final total as last value in output window
+    Halt
+Outp,    Output
+	Add Sum				/Adds AC value to sum
+    Store Sum			/Stores to the running total
+    Load       ptr            / Move pointer to next number.
+    Add       One        
+    Store       ptr
+    Jump       Get
+One,    Hex    0001
+ptr,     Hex    10D
+Array,     Dec    072 
+    Dec    011  
+    Dec    018  
+    Dec    010 
+    Dec    119
+    Dec    032  
+    Dec    110  
+    Dec    019  
+    Dec    000  
+
+Sum, Dec    000  
+        END

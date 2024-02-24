@@ -1,0 +1,89 @@
+-- create table employee 
+create table employee ( emp_id number, emp_name varchar2(50), age integer,  salary number );
+-- add data (rows) into employee
+insert into employee ( emp_id, emp_name, age, salary) values ( 1000, 'Will', 30, 100000);
+insert into employee ( emp_id, emp_name, age, salary) values ( 1001, 'John', 40, 200000);
+insert into employee ( emp_id, emp_name, age, salary) values ( 1002, 'Judy', 25, 300000);
+
+-- create table project
+create table project ( proj_id number, proj_name varchar2(40));
+insert into project (proj_id, proj_name) values ( 10, 'Project 1');
+insert into project (proj_id, proj_name) values ( 20, 'Project 2');
+insert into project (proj_id, proj_name) values ( 20, 'Project 3');
+-- delete the wrong one
+delete from project where proj_name = 'Project 3';
+
+-- make the key
+alter table project add constraint project_pk primary key (proj_id);
+
+--
+insert into project (proj_id, proj_name) values ( 20, 'Project 3'); -- error here because of the constraint project_pk
+insert into project (proj_id, proj_name) values ( 30, 'Project 2'); -- NO error here because of no constraint on proj_name
+
+update project set proj_name = 'Project 2' where proj_id = 30; -- fix the duplicate name on proj_name
+
+--
+--Table works_on  emp_id, proj_id
+
+create table works_on ( emp_id number, proj_id number);
+
+-- connect John (id = 1000) with Project 1 (id = 10)
+insert into works_on (emp_id, proj_id) values ( 1000, 10);
+insert into works_on (emp_id, proj_id) values ( 1000, 30);
+
+create table department ( dept_id number, dept_name varchar2(50));
+
+insert into department (dept_name, dept_id) values ( 'HR', 1);
+insert into department (dept_id, dept_name) values ( 2, 'COSC');
+
+-- for the relationship type WORKS_FOR, there are two ways to do it
+create table works_for ( emp_id number, dept_id number);
+insert into works_for ( emp_id, dept_id) values ( 1000, 1);
+
+-- knowing that only one emp_id that goes with only one dept, we may not need the table works_for
+drop table works_for;
+
+-- instead of using a separate table works_for, we can just use a column
+alter table employee add dept_id number;
+
+-- update John with dept_id 1
+update employee set dept_id = 1 where emp_id = 1000;
+update employee set dept_id = 2 where emp_id = 1002;
+
+-- want to specify that Judy works on Project 2
+insert into works_on (emp_id, proj_id) values (1002, 30);
+insert into works_on (emp_id, proj_id) values (1002, 21);
+
+alter table project add constraint project_pk primary key (proj_id); -- error here because we already did it above.
+
+-- foreign key on proj_id of works_on to be sure that it has to match with the primary key in PROJECT
+alter table works_on add constraint works_on_proj_id_fk foreign key (proj_id) references project(proj_id);
+-- the above command has an error because we have 21 in works_on that does not match with any proj_id in project
+-- fix the data
+update works_on set proj_id = 20 where proj_id = 21;
+
+alter table works_on add constraint works_on_proj_id_fk foreign key (proj_id) references project(proj_id);
+
+-- try the ploblem one
+insert into works_on (emp_id, proj_id) values (1002, 21); -- this is stopped due to the above constraint
+
+-- what if
+insert into works_on (emp_id, proj_id) values (1020, 30); -- this is stopped due to the above constraint
+
+-- foreign key on emp_id of works_on to be sure that it has to match with the primary key in EMPLOYEE
+alter table works_on add constraint works_on_emp_id_fk foreign key (emp_id) references employee(emp_id);
+-- error because we currently do not have the primary key on emp_id in employee
+-- create it
+alter table employee add constraint employee_pk primary key (emp_id);
+
+-- execute the foreign key again
+alter table works_on add constraint works_on_emp_id_fk foreign key (emp_id) references employee(emp_id);
+
+
+-- fix the bad data
+update works_on set emp_id = 1002 where emp_id = 1020;
+
+-- execute the foreign key again
+alter table works_on add constraint works_on_emp_id_fk foreign key (emp_id) references employee(emp_id);
+
+insert into works_on (emp_id, proj_id) values (1020, 30); -- this is stopped due to the above constraint
