@@ -1,0 +1,24 @@
+﻿create table actor ( actor_id integer, actor_name varchar2(100), actor_address varchar2(100));
+alter table project add constraint actor_pk primary key (actor_id);
+
+create table movie ( movie_id integer, movie_name varchar2(100), genre varchar2(100));
+alter table project add constraint movie_pk primary key (movie_id);
+
+create table performs_in (FOREIGN KEY actor_id REFERENCES actor(actor_id),
+ FOREIGN KEY movie_id REFERENCES movie(movie_id));
+
+ insert into actor (actor_id, actor_name, actor_address) values(1, 'Dustin Hoffman','1232 Axtell Dr');
+insert into actor (actor_id, actor_name, actor_address) values(2, 'Julia Roberts','4467 Bellwood Dr');
+insert into actor (actor_id, actor_name, actor_address) values(3, 'Shinichi Chiba','123 Woodway Way');
+
+insert into movie(movie_id, movie_name, genre) values (90, 'Some Like it Hot', 'comedy');
+insert into movie(movie_id, movie_name, genre) values (91, 'Jamunji', 'comedy');
+insert into movie(movie_id, movie_name, genre) values (92, 'Alien', 'horror');
+insert into movie(movie_id, movie_name, genre) values (93, 'It', 'horror');
+
+alter table performs_in add role varchar2(20);
+
+insert into performs_in (actor_id, movie_id, role) value (1, 90, 'MAIN');
+insert into performs_in (actor_id, movie_id, role) value (2, 90, 'SUPPORTING');
+insert into performs_in (actor_id, movie_id, role) value (3, 91, 'MAIN');
+insert into performs_in (actor_id, movie_id, role) value (1, 93, 'SUPPORTING');
