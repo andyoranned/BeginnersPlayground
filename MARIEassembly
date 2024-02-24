@@ -1,0 +1,33 @@
+/ This program reads a decimal array and outputs each 
+/ number. The array is terminated with a zero.
+/ Add the decimal numbers and store in sum and display sum at the end.
+
+    ORG 100
+Get,    LoadI       ptr    / Load the character found at address chptr.
+    Skipcond   400        / If the character is a null, we are done.
+    Jump       Outp        / Otherwise, proceed with operation.
+    Load Sum
+    Output
+
+    Halt
+Outp,    Output          / Output the number.
+    add Sum
+    Store Sum
+    Load       ptr            / Move pointer to next number.
+    Add       One        
+    Store       ptr
+    Jump       Get
+One,    Hex    0001
+ptr,     Hex    10f
+Array,     Dec    072 
+    Dec    11  
+    Dec    18  
+    Dec    10 
+    Dec    119
+    Dec    032  
+    Dec    110  
+    Dec    033  
+    Dec    000  
+
+Sum, Dec    000  
+        END
